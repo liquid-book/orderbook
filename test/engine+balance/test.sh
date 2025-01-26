@@ -8,7 +8,11 @@ else
 fi
 
 # Define scripts to run
-scripts=("deploy.sh" "fund.sh" "initialize.sh" "deposit.sh" "limit_orders.sh")
+if [ "$dev" == "true" ]; then
+    scripts=("deploy.sh" "initialize.sh" "deposit.sh" "limit_orders.sh" "market_orders.sh")
+else
+    scripts=("fund.sh" "deploy.sh" "initialize.sh" "deposit.sh" "limit_orders.sh" "market_orders.sh")
+fi
 
 # Function to run script and check status
 run_script() {

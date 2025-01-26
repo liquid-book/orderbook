@@ -5,6 +5,7 @@ extern crate alloc;
 use stylus_sdk::{
     alloy_primitives::{Address, U256},
     // console,
+    contract,
     prelude::*,
 };
 
@@ -25,7 +26,7 @@ sol_interface! {
     interface IBitmapStorage {
         function setCurrentTick(int128 tick) external returns (uint256);
         function getCurrentTick() external returns (int128);
-        function convertFromTickToPrice(int128 tick) external view returns (uint256);
+        function convertFromTickToPrice(int128 tick) external view returns (uint256, uint256);
     }
 
     interface IBalanceManager {
@@ -87,13 +88,28 @@ impl PoolLiquidBook {
     }
 
     pub fn calculate_price(&mut self, volume: U256, tick: i128) -> U256 {
-        let bitmap_manager = IBitmapStorage::new(self.bitmap_manager.get());
-        let price_per_volume = bitmap_manager
+        let bitmap_storage = IBitmapStorage::new(self.bitmap_manager.get());
+        let asset_token_decimals = U256::from(
+            IERC20::new(self.asset_token.get())
+                .decimals(&mut *self)
+                .unwrap(),
+        );
+        let stable_token_decimals = U256::from(
+            IERC20::new(self.stable_token.get())
+                .decimals(&mut *self)
+                .unwrap(),
+        );
+
+        let asset_token_unit = U256::from(10u64).pow(asset_token_decimals);
+        let stable_token_unit = U256::from(10u64).pow(stable_token_decimals);
+        // let price_per_volume = bitmap_manager
+        //     .convert_from_tick_to_price(&mut *self, tick)
+        //     .unwrap();
+        // volume * price_per_volume / U256::from(10u64).pow(token_decimals)
+        let (price, scale) = bitmap_storage
             .convert_from_tick_to_price(&mut *self, tick)
             .unwrap();
-        let token = IERC20::new(self.asset_token.get());
-        let token_decimals = U256::from(token.decimals(&mut *self).unwrap());
-        volume * price_per_volume / U256::from(10u64).pow(token_decimals)
+        (price * volume * stable_token_unit) / (asset_token_unit * scale)
     }
 
     pub fn transfer_locked(
@@ -103,7 +119,7 @@ impl PoolLiquidBook {
         buyer: Address,
         seller: Address,
     ) -> Result<(), Vec<u8>> {
-        let pool_manager = self.pool_manager.get();
+        // let pool_manager = self.pool_manager.get();
         let _balance_manager = IBalanceManager::new(self.balance_manager.get());
 
         let price = self.calculate_price(transfer_volume, transfer_tick);
@@ -119,7 +135,7 @@ impl PoolLiquidBook {
             if let Err(e) = _balance_manager.transfer_locked(
                 &mut *self,
                 *from,
-                pool_manager,
+                contract::address(),
                 *to,
                 *token,
                 *volume,

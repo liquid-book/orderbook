@@ -17,13 +17,13 @@ interface IBitmapManager {
 
     function setCurrentTick(int128 tick) external returns (int128);
 
+    function log(int32 value) external view;
+
     function topNBestTicks(bool is_buy) external view returns (int128[] memory);
 
     function flip(int32 tick) external returns (int16, uint8);
 
-    function getBitmap(int16 index) external returns (uint256);
-
     function nextTick(int32 tick, bool lte) external view returns (int32, bool);
 
-    function convertFromTickToPrice(int128 tick) external pure returns (uint256);
+    function convertFromTickToPrice(int128 tick) external pure returns (uint256, uint256);
 }

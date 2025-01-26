@@ -115,7 +115,7 @@ impl BalanceManager {
                 token,
                 amount,
             }));
-        } 
+        }
         // console!("Deposit successful.");
 
         let mut user_balances = self.balances.setter(sender);
@@ -202,7 +202,7 @@ impl BalanceManager {
         let mut user_balances = self.balances.setter(user);
         let current_token_balance = user_balances.get(token);
         if current_token_balance < amount {
-            // console!("Insufficient balance for locking.");
+            console!("Insufficient balance for locking.");
             return Err(BalanceManagerError::InsufficientBalance(
                 InsufficientBalance {
                     user,
@@ -212,19 +212,19 @@ impl BalanceManager {
                 },
             ));
         }
-        // user_balances
-        //     .setter(token)
-        //     .set(current_token_balance - amount);
-        // let mut user_locked_balances = self.locked_balances.setter(user);
-        // let mut operator_balances = user_locked_balances.setter(operator);
-        // let current_locked_token_balance = operator_balances.get(token);
-        // operator_balances
-        //     .setter(token)
-        //     .set(current_locked_token_balance + amount);
-        // // console!(
-        // //     "Locking successful. {}",
-        // //     current_locked_token_balance + amount
-        // // );
+        user_balances
+            .setter(token)
+            .set(current_token_balance - amount);
+        let mut user_locked_balances = self.locked_balances.setter(user);
+        let mut operator_balances = user_locked_balances.setter(operator);
+        let current_locked_token_balance = operator_balances.get(token);
+        operator_balances
+            .setter(token)
+            .set(current_locked_token_balance + amount);
+        console!(
+            "Locking successful. {}",
+            current_locked_token_balance + amount
+        );
         Ok(())
     }
 
@@ -277,7 +277,7 @@ impl BalanceManager {
     ) -> Result<(), BalanceManagerError> {
         // let operator = msg::sender();
         if !self.is_operator.get(sender).get(operator) {
-            // console!("Operator is not allowed.");
+            console!("Operator is not allowed.");
             return Err(BalanceManagerError::TransferError(TransferError {
                 user: sender,
                 token,
@@ -288,7 +288,7 @@ impl BalanceManager {
         let mut sender_operator_balances = sender_locked_balances.setter(operator);
         let sender_current_locked_token_balance = sender_operator_balances.get(token);
         if sender_current_locked_token_balance < amount {
-            // console!("Insufficient locked balance for transfer.");
+            console!("Insufficient locked balance for transfer.");
             return Err(BalanceManagerError::InsufficientBalance(
                 InsufficientBalance {
                     user: sender,
@@ -298,32 +298,32 @@ impl BalanceManager {
                 },
             ));
         }
-        // sender_operator_balances
-        //     .setter(token)
-        //     .set(sender_current_locked_token_balance - amount);
-        // console!(
-        //     "Sender's locked balance changed from {} to {}.",
-        //     sender_current_locked_token_balance,
-        //     sender_current_locked_token_balance - amount,
-        // );
+        sender_operator_balances
+            .setter(token)
+            .set(sender_current_locked_token_balance - amount);
+        console!(
+            "Sender's locked balance changed from {} to {}.",
+            sender_current_locked_token_balance,
+            sender_current_locked_token_balance - amount,
+        );
 
-        // let mut receiver_balances = self.balances.setter(receiver);
-        // let receiver_current_token_balance = receiver_balances.get(token);
-        // receiver_balances
-        //     .setter(token)
-        //     .set(receiver_current_token_balance + amount);
-        // // console!(
-        // //     "Receiver's balance changed from {} to {}.",
-        // //     receiver_current_token_balance,
-        // //     receiver_current_token_balance + amount
-        // // );
+        let mut receiver_balances = self.balances.setter(receiver);
+        let receiver_current_token_balance = receiver_balances.get(token);
+        receiver_balances
+            .setter(token)
+            .set(receiver_current_token_balance + amount);
+        console!(
+            "Receiver's balance changed from {} to {}.",
+            receiver_current_token_balance,
+            receiver_current_token_balance + amount
+        );
 
-        // console!("Transfer locked balance successful.");
-        // evm::log(BalanceUpdated {
-        //     user: sender,
-        //     token,
-        //     amount,
-        // });
+        console!("Transfer locked balance successful.");
+        evm::log(BalanceUpdated {
+            user: sender,
+            token,
+            amount,
+        });
         Ok(())
     }
 }

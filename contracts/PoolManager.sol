@@ -13,5 +13,5 @@ interface IPoolManager {
 
     function addPool(address pool_address, address asset_token, address stable_token, address engine_manager, address bitmap_manager, int128 current_tick, uint256 lot_size) external;
 
-    function placeOrder(address pool_address, uint256 incoming_order_volume, int128 incoming_order_tick, bool incoming_order_is_buy, bool incoming_order_is_market) external;
+    function placeOrder(address pool_address, int128 incoming_order_tick, uint256 incoming_order_volume, bool incoming_order_is_buy, bool incoming_order_is_market) external;
 }

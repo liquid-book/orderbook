@@ -15,7 +15,7 @@ echo "Initialize engine"
 cast send $ENGINE_ADDRESS "initialize(address,address,address,address)" $TICK_ADDRESS $ORDER_ADDRESS $BITMAP_ADDRESS $MATCHER_ADDRESS --rpc-url $rpc_url --private-key $private_key > /dev/null 2>&1
 
 echo "Initialize matcher"
-cast send $MATCHER_ADDRESS "initialize(address,address,address,address)" $TICK_ADDRESS $BITMAP_ADDRESS $ORDER_ADDRESS $POOL_ORDERBOOK_ADDRESS --rpc-url $rpc_url --private-key $private_key > /dev/null 2>&1
+cast send $MATCHER_ADDRESS "initialize(address,address,address,address,address)" $TICK_ADDRESS $BITMAP_ADDRESS $ORDER_ADDRESS $BALANCE_MANAGER_ADDRESS $POOL_ORDERBOOK_ADDRESS --rpc-url $rpc_url --private-key $private_key > /dev/null 2>&1
 
 echo "Initialize tick"
 cast send $TICK_ADDRESS "initialize(address,address,address)" $ENGINE_ADDRESS $BITMAP_ADDRESS $ORDER_ADDRESS --rpc-url $rpc_url --private-key $private_key > /dev/null 2>&1
@@ -29,5 +29,5 @@ cast send $POOL_MANAGER_ADDRESS "initialize(address)" $BALANCE_MANAGER_ADDRESS -
 echo "Add new pool"
 cast send $POOL_MANAGER_ADDRESS "addPool(address,address,address,address,address,int128,uint256)" $POOL_ORDERBOOK_ADDRESS $MOCK_WETH_ADDRESS $MOCK_USDC_ADDRESS $ENGINE_ADDRESS $BITMAP_ADDRESS 81200 1000000000000000 --rpc-url $rpc_url --private-key $private_key > /dev/null 2>&1
 
-echo "Set initial tick"
-cast send --rpc-url $rpc_url --private-key $private_key $BITMAP_ADDRESS "setCurrentTick(int128)" 81200 > /dev/null 2>&1
+# echo "Set initial tick"
+# cast send --rpc-url $rpc_url --private-key $private_key $BITMAP_ADDRESS "setCurrentTick(int128)" 81200 > /dev/null 2>&1

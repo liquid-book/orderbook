@@ -1,7 +1,7 @@
 # Loop through each .sol file in the contracts directory except matcher.sol
 for sol_file in "$(dirname "$0")/contracts"/*.sol; do
   # Skip matcher.sol file
-  if [[ "$(basename "$sol_file")" == "matcher.sol" ]]; then
+  if [[ "$(basename "$sol_file")" == "Matcher.sol" ]]; then
     continue
   fi
 
@@ -28,10 +28,6 @@ for sol_file in "$(dirname "$0")/contracts"/*.sol; do
   # Read the ABI content
   abi_content=$(cat "$abi_file_path")
 
-  # Print the ABI content and the file it was read from for testing
-#   echo "Testing: ABI content from $abi_file_path"
-#   echo "$abi_content"
-
   # Extract the ABI array from the content
   abi_array=$(echo "$abi_content" | sed -n '/^\[.*\]$/p')
 
@@ -41,17 +37,17 @@ for sol_file in "$(dirname "$0")/contracts"/*.sol; do
     continue
   fi
 
-  # Define the TypeScript and JSON file paths
-  ts_file_path="$(dirname "$0")/contracts/${base_name}.ts"
-  json_file_path="$(dirname "$0")/contracts/${base_name}.json"
+  # Define the TypeScript and JSON file paths inside specific folders
+  ts_file_path="$(dirname "$0")/contracts/abis/${base_name}ABI.ts"
+  json_file_path="$(dirname "$0")/contracts/jsonAbis/${base_name}ABI.json"
 
   # Write the ABI array to the TypeScript file
-  echo "export const $(echo "${base_name}" | sed -r 's/(^|-)([a-z])/\U\2/g') = ${abi_array};" > "$ts_file_path"
+  echo "export const $(echo "${base_name}" | sed -r 's/(^|-)([a-z])/\U\2/g')ABI = ${abi_array};" > "$ts_file_path"
 
   # Write the ABI array to the JSON file
   echo "{ \"abi\": ${abi_array} }" > "$json_file_path"
 
-  echo "Generated ${base_name}.ts and ${base_name}.json from ${abi_file_path}"
+  echo "Generated ${base_name}ABI.ts and ${base_name}ABI.json from ${abi_file_path}"
 
 done
 
