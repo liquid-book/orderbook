@@ -6,7 +6,7 @@ LiquidBook is a decentralized orderbook implementation written in Rust using Arb
 
 The project consists of several core components
 
-- **ABIS**: Application Binary Interface 
+- **ABIS**: Application Binary Interface
 - **Bitmap**: Memory-efficient order tracking system (inspired by Uniswap's bitmap implementation)
 - **Engine**: Handles order placement and matching logic
   - Places new orders
@@ -22,19 +22,28 @@ The project consists of several core components
     - Total size at each tick
     - Buy/Sell designation
     - Number of orders per tick
-
+- **Balance Manager**: Manages user balances
+  - Handles locking and transferring balances for buyers and sellers
+- **Pool Manager**: Manages the selection and operation of pools for orders
+  - Handles pool selection and related balance operations
+  - Supports adding new pools
+- **Pool Orderbook**: Manages the orderbook within a pool
+  - Configures and maintains the pool
 
 ## 📁 Project Structure
 
 ```
-├── abis/           # ABI definitions
-├── bitmap/         # Bitmap management
-├── engine/         # Core matching engine
-├── matcher/        # Process matching orders
-├── order/          # Order management
-├── tick/           # Tick management
-├── deploy.sh       # Deployment script
-└── README.md       # Documentation
+├── abis/                     # ABI definitions
+├── balance-manager/          # Balance management
+├── bitmap/                   # Bitmap management
+├── engine/                   # Core matching engine
+├── matcher/                  # Process matching orders
+├── order/                    # Order management
+├── tick/                     # Tick management
+├── pool-manager/             # Pool management
+├── pool-orderbook/           # Pool order book
+├── deploy.sh                 # Deployment script
+└── README.md                 # Documentation
 ```
 
 ## 🛠️ Technical Stack
@@ -53,17 +62,20 @@ Please follow the Arbitrum Stylus Development Environment Setup Guide to set up 
 ### Building
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/liquid-book/orderbook.git
 cd orderbook
 ```
 
 2. Build the project:
+
 ```bash
 cargo build
 ```
 
 3. Deploy using the provided script:
+
 ```bash
 ./deploy.sh
 ```
@@ -77,7 +89,6 @@ cargo build
 - Secure transaction handling
 - Price tick management
 - Bitmap-based order tracking
-
 
 ## 📍 Deployed Contracts
 

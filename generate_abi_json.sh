@@ -42,7 +42,7 @@ for sol_file in "$(dirname "$0")/contracts"/*.sol; do
   json_file_path="$(dirname "$0")/contracts/jsonAbis/${base_name}ABI.json"
 
   # Write the ABI array to the TypeScript file
-  echo "export const $(echo "${base_name}" | sed -r 's/(^|-)([a-z])/\U\2/g')ABI = ${abi_array};" > "$ts_file_path"
+  echo "export const $(echo "${base_name}" | sed -r 's/(^|-)([a-z])/\U\2/g')ABI = ${abi_array} as const;" > "$ts_file_path"
 
   # Write the ABI array to the JSON file
   echo "{ \"abi\": ${abi_array} }" > "$json_file_path"
