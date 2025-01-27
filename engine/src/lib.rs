@@ -5,7 +5,12 @@ use alloc::vec::Vec;
 use alloy_primitives::Address;
 use alloy_sol_macro::sol;
 use core::panic::PanicInfo;
-use stylus_sdk::{alloy_primitives::U256, console, evm, prelude::*};
+use stylus_sdk::{
+    alloy_primitives::U256,
+    // console,
+    evm,
+    prelude::*,
+};
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
@@ -71,10 +76,8 @@ impl LiquidBookEngine {
         incoming_order_volume: U256,
         incoming_order_user: Address,
         incoming_order_is_buy: bool,
-        incoming_order_is_market: bool
+        incoming_order_is_market: bool,
     ) -> (U256, i128, U256) {
-        console!("incoming_order_is_buy: {}", incoming_order_is_buy);
-
         let tick_manager = ITickManager::new(self.tick_manager_address.get());
         let order_manager = IOrderManager::new(self.order_manager_address.get());
         let bitmap_manager = IBitmapManager::new(self.bitmap_manager_address.get());

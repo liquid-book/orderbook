@@ -35,9 +35,8 @@ $abi_interface
 EOF
 )
 
-  # Create the ABI file name based on the interface pattern
-  # abi_interface_name=$(echo "$abi_interface" | awk '/interface/{print $2}')
-  abi_file_name="${module}.sol"
+  # Create the ABI file name with capitalized module name
+  abi_file_name="$(echo "${module}" | sed -r 's/(^|-)([a-z])/\U\2/g').sol"
 
   # Define the path to the ABI file in the root directory
   abi_file_path="$(dirname "$0")/contracts/$abi_file_name"
@@ -54,33 +53,33 @@ done
 # this parts need solc installed in your local
 
 
-# Loop through each .sol file in the contracts directory
-for sol_file in "$(dirname "$0")/contracts"/*.sol; do
-  # Extract the base name of the file without extension
-  base_name=$(basename "$sol_file" .sol)
+# # Loop through each .sol file in the contracts directory
+# for sol_file in "$(dirname "$0")/contracts"/*.sol; do
+#   # Extract the base name of the file without extension
+#   base_name=$(basename "$sol_file" .sol)
   
-  # Compile the .sol file to generate the ABI
-  solc --abi "$sol_file" -o "$(dirname "$0")/contracts"
+#   # Compile the .sol file to generate the ABI
+#   solc --abi "$sol_file" -o "$(dirname "$0")/contracts"
 
-  # Define the ABI file path using regex to match the pattern
-  abi_file_path="$(dirname "$0")/contracts/$(echo "$base_name" | sed -r 's/(.*)/\1_sol_.*\.abi/')"
+#   # Define the ABI file path using regex to match the pattern
+#   abi_file_path="$(dirname "$0")/contracts/$(echo "$base_name" | sed -r 's/(.*)/\1_sol_.*\.abi/')"
 
-  # Read the ABI content
-  abi_content=$(cat "$abi_file_path")
+#   # Read the ABI content
+#   abi_content=$(cat "$abi_file_path")
 
-  # Extract the ABI array from the content
-  abi_array=$(echo "$abi_content" | awk '/\[/{flag=1; next} /\]/{flag=0} flag')
+#   # Extract the ABI array from the content
+#   abi_array=$(echo "$abi_content" | awk '/\[/{flag=1; next} /\]/{flag=0} flag')
 
-  # Define the TypeScript and JSON file paths
-  ts_file_path="$(dirname "$0")/contracts/${base_name}.ts"
-  json_file_path="$(dirname "$0")/contracts/${base_name}.json"
+#   # Define the TypeScript and JSON file paths
+#   ts_file_path="$(dirname "$0")/contracts/${base_name}ABI.ts"
+#   json_file_path="$(dirname "$0")/contracts/${base_name}ABI.json"
 
-  # Write the ABI array to the TypeScript file
-  echo "export const $(echo "${base_name}" | sed -r 's/(^|-)([a-z])/\U\2/g') = [${abi_array}];" > "$ts_file_path"
+#   # Write the ABI array to the TypeScript file
+#   echo "export const $(echo "${base_name}" | sed -r 's/(^|-)([a-z])/\U\2/g')ABI = ${abi_array};" > "$ts_file_path"
 
-  # Write the ABI array to the JSON file
-  echo "{ \"abi\": [${abi_array}] }" > "$json_file_path"
+#   # Write the ABI array to the JSON file
+#   echo "{ \"abi\": ${abi_array} }" > "$json_file_path"
 
-  echo "Generated ${base_name}.ts and ${base_name}.json from ${base_name}.abi"
-done
+#   echo "Generated ${base_name}ABI.ts and ${base_name}ABI.json from ${abi_file_path}"
+# done
 

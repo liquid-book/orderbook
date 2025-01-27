@@ -91,7 +91,7 @@ impl OrderManager {
     }
 
     pub fn update_order(&mut self, tick: i128, volume: U256, order_index: U256) {
-        let tick_manager = ITickManager::new(self.tick_manager_address.get());
+        let _tick_manager = ITickManager::new(self.tick_manager_address.get());
         let order_data = self.read_order(tick, order_index).unwrap();
 
         if volume == U256::ZERO {

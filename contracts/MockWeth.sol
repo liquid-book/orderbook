@@ -24,6 +24,10 @@ interface IErc20 {
     function approve(address spender, uint256 value) external returns (bool);
 
     function allowance(address owner, address spender) external view returns (uint256);
+
+    error InsufficientBalance(address, uint256, uint256);
+
+    error InsufficientAllowance(address, address, uint256, uint256);
 }
 interface IWethToken is IErc20 {
     function mint(uint256 value) external;
@@ -32,7 +36,7 @@ interface IWethToken is IErc20 {
 
     function burn(uint256 value) external;
 
-    error InsufficientBalance(address, uint256, uint256);
+    // error InsufficientBalance(address, uint256, uint256);
 
-    error InsufficientAllowance(address, address, uint256, uint256);
+    // error InsufficientAllowance(address, address, uint256, uint256);
 }

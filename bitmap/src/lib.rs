@@ -7,8 +7,7 @@ use alloy_sol_macro::sol;
 use stylus_sdk::storage::{StorageI128, StorageMap, StorageU256};
 use stylus_sdk::{
     alloy_primitives::{I128, U256},
-    console, 
-    evm,
+    console, evm,
     prelude::*,
     stylus_proc::entrypoint,
 };
@@ -63,7 +62,6 @@ impl BitmapManager {
         console!("BITMAP :: log :: value: {}", value);
     }
 
-    
     pub fn top_n_best_ticks(&self, is_buy: bool) -> Vec<i128> {
         let mut counter = U256::from(0);
         let mut best_ticks: Vec<i128> = Vec::new();
@@ -97,7 +95,14 @@ impl BitmapManager {
     }
 
     pub fn flip(&mut self, tick: i32) -> (i16, u8) {
-        console!("BITMAP :: flip :: {:b}{:b}{:b}{:b}{:b}", self.storage.get(320), self.storage.get(319), self.storage.get(318), self.storage.get(317), self.storage.get(316));
+        console!(
+            "BITMAP :: flip :: {:b}{:b}{:b}{:b}{:b}",
+            self.storage.get(320),
+            self.storage.get(319),
+            self.storage.get(318),
+            self.storage.get(317),
+            self.storage.get(316)
+        );
 
         TickBitmap::flip_tick(&mut self.storage, tick, 1);
 
@@ -107,8 +112,8 @@ impl BitmapManager {
     }
 
     // fn get_bitmap(&mut self, index: i16) -> U256 {
-        // self.storage.get(index)
-        // console!("BITMAP :: bitmap: {:b}", bitmap);
+    // self.storage.get(index)
+    // console!("BITMAP :: bitmap: {:b}", bitmap);
     //     U256::ZERO
     // }
 
@@ -118,7 +123,7 @@ impl BitmapManager {
         (next, initialized)
     }
 
-    pub fn convert_from_tick_to_price(tick: i128) -> U256 {
+    pub fn convert_from_tick_to_price(tick: i128) -> (U256, U256) {
         let base: u128 = 1_000_100; // 1.0001 * 10^6
         let scale: u128 = 1_000_000; // 10^6
 
@@ -126,6 +131,6 @@ impl BitmapManager {
         for _ in 0..tick {
             result = (result * base) / scale;
         }
-        U256::from(result / scale)
+        (U256::from(result), U256::from(scale))
     }
 }
